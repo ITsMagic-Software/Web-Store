@@ -10,3 +10,6 @@
 !.env.example
 
 *.tsbuildinfo
+/test-results
+/qa-screenshots
+__pycache__/

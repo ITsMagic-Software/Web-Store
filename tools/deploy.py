@@ -51,7 +51,7 @@ def multipart(secret: str, archive: Path) -> tuple[bytes, str]:
 
 def main() -> int:
     secret = os.getenv("STORE_UPLOAD_SECRET", "")
-    upload_url = os.getenv("STORE_UPLOAD_URL", DEFAULT_URL)
+    upload_url = os.getenv("STORE_UPLOAD_URL") or DEFAULT_URL
     if not secret:
         print("STORE_UPLOAD_SECRET is required", file=sys.stderr)
         return 1
@@ -79,7 +79,7 @@ def main() -> int:
         response = connection.getresponse()
         message = response.read().decode("utf-8", errors="replace")
         print(message)
-        if response.status >= 400:
+        if not 200 <= response.status < 300:
             print(f"Store upload failed: HTTP {response.status} {response.reason}", file=sys.stderr)
             return 1
         return 0

@@ -1,0 +1,67 @@
+/* Theme palette: edit :root for light mode and .dark for dark mode.
+   Full CSS colors (HEX, rgb(), hsl()) work here; the editor can show color swatches.
+   See ../THEMING.md or ../THEMING.pt-BR.md for the token reference.
+   Dark mode inherits the fallback thumbnail gradients unless overridden below. */
+
+:root {
+  color-scheme: light;
+
+  --background: #FCFCFC; /* Page background. */
+  --foreground: #121216; /* Primary text, headings and icons. */
+  --surface: #FFFFFF; /* Cards, inputs, menus and action bars. */
+  --surface-elevated: #FFFFFF; /* Focused fields and raised surfaces. */
+
+  --muted: #F4F4F5; /* Hover backgrounds, tags and loading placeholders. */
+  --muted-foreground: #67676F; /* Descriptions, metadata and secondary icons. */
+  --border: var(--divider); /* Default border color; follows divider. */
+  --divider: #E4E4E7; /* Separators and component outlines. */
+  --card-hover-border: #FB985180; /* Asset card hover border, including opacity; independent of text colors. */
+
+  --accent: #BD5205; /* Primary package action and brand accent. */
+  --hero-glow: #F68D31; /* Decorative glow behind the hero title. */
+  --accent-foreground: #FFFFFF; /* Text and icons on accent backgrounds. */
+  --ring: var(--accent); /* Keyboard focus indicator; follows accent. */
+
+  --destructive: #DC2828; /* Reserved for error and destructive states. */
+  --success: #248F4B; /* Reserved for success states. */
+  --warning: #CE8509; /* Reserved for warning states. */
+
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #121216 4%, transparent); /* Subtle elevation for controls and cards. */
+  --shadow-md: 0 8px 24px -8px color-mix(in srgb, #121216 12%, transparent); /* Elevation for floating panels and menus. */
+  --glow: color-mix(in srgb, var(--hero-glow) 16%, transparent); /* Translucent halo derived from hero-glow. */
+
+  --thumb-1: linear-gradient(135deg, #DEE3ED, #B6BDD8); /* Blue fallback thumbnail gradient. */
+  --thumb-2: linear-gradient(135deg, #D9E5E8, #A9C2D1); /* Cyan fallback thumbnail gradient. */
+  --thumb-3: linear-gradient(135deg, #DAE7E1, #A5CAC1); /* Green fallback thumbnail gradient. */
+  --thumb-4: linear-gradient(135deg, #EDE7DE, #D4BEAF); /* Sand fallback thumbnail gradient. */
+  --thumb-5: linear-gradient(135deg, #E6E0EB, #BEB2D2); /* Purple fallback thumbnail gradient. */
+  --thumb-6: linear-gradient(135deg, #EBE0E2, #D3B1BC); /* Rose fallback thumbnail gradient. */
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background: #0B0B0E; /* Page background. */
+  --foreground: #F5F5F5; /* Primary text, headings and icons. */
+  --surface: #161618; /* Cards, inputs, menus and action bars. */
+  --surface-elevated: #1D1D20; /* Focused fields and raised surfaces. */
+
+  --muted: #222225; /* Hover backgrounds, tags and loading placeholders. */
+  --muted-foreground: #9F9FA8; /* Descriptions, metadata and secondary icons. */
+  --border: var(--divider); /* Default border color; follows divider. */
+  --divider: #2C2C30; /* Separators and component outlines. */
+  --card-hover-border: #fb98513d; /* Asset card hover border, including opacity; independent of text colors. */
+
+  --accent: #FB9851; /* Primary package action and brand accent. */
+  --hero-glow: #F39849; /* Decorative glow behind the hero title. */
+  --accent-foreground: #0E0E11; /* Text and icons on accent backgrounds. */
+  --ring: var(--accent); /* Keyboard focus indicator; follows accent. */
+
+  --destructive: #E25A5A; /* Reserved for error and destructive states. */
+  --success: #59CF84; /* Reserved for success states. */
+  --warning: #F7B645; /* Reserved for warning states. */
+
+  --shadow-sm: inset 0 1px 0 color-mix(in srgb, #FFFFFF 4%, transparent); /* Subtle elevation for controls and cards. */
+  --shadow-md: inset 0 1px 0 color-mix(in srgb, #FFFFFF 4%, transparent); /* Elevation for floating panels and menus. */
+  --glow: color-mix(in srgb, var(--hero-glow) 13%, transparent); /* Translucent halo derived from hero-glow. */
+}

@@ -22,5 +22,13 @@ jobs:
         run: npm ci
       - name: Typecheck
         run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Unit tests
+        run: npm test
+      - name: Deployment script tests
+        run: python -m unittest discover -s tests -p "test_*.py"
+      - name: Validate translations
+        run: npm run i18n:check
       - name: Build static site
         run: npm run build
