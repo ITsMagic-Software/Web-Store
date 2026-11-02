@@ -9,6 +9,7 @@ export interface Asset {
   publishedAt: string;
   updatedAt?: string;
   thumbnailUrl?: string;
+  imageUrls?: string[];
   packageUrl?: string;
   downloadUrl?: string;
   licenseUrl?: string;

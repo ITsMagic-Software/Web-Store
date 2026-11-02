@@ -26,9 +26,20 @@ for (const scenario of cases) {
       await expect(heading).toBeVisible();
       await expect(page.locator('a[href*="pkg="]').first()).toBeVisible();
       await expect(page.locator("html")).toHaveClass(scenario.colorScheme === "dark" ? /\bdark\b/ : /^(?!.*\bdark\b)/);
+      await expect(page.locator(`.theme-icon-${scenario.colorScheme}`)).toBeVisible();
+      await expect(page.locator(`.theme-icon-${scenario.colorScheme === "dark" ? "light" : "dark"}`)).toBeHidden();
       expect(await heading.evaluate((element) => getComputedStyle(element).opacity)).toBe("1");
       expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
       await page.screenshot({ path: `qa-screenshots/${scenario.name}.png` });
+      if (scenario.name === "tablet-light") {
+        await page.emulateMedia({ colorScheme: "dark" });
+        await expect(page.locator(".theme-icon-dark")).toBeVisible();
+        await page.locator(".store-header button").click();
+        await expect(page.locator(".theme-icon-light")).toBeVisible();
+        await page.reload();
+        await expect(page.locator(".theme-icon-light")).toBeVisible();
+        await expect(page.locator(".theme-icon-dark")).toBeHidden();
+      }
       expect(problems).toEqual([]);
     } finally {
       await context.close();

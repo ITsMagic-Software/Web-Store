@@ -1,4 +1,5 @@
 import { parseManifestDate } from "@/lib/date";
+import { isAllowedImageUrl } from "@/lib/images";
 import type { Asset } from "@/domain/models";
 import { getGitHubZipUrl } from "@/services/github/repositoryMetadata";
 
@@ -119,6 +120,11 @@ export function mapManifestAssets(raw: unknown): AssetMappingResult {
     const creator = getString("creator", "author", "publisher", "userName");
     const tags = getString("tags", "tag")?.split(",").map((tag) => tag.trim()).filter(Boolean) ?? [];
     const thumbnailUrl = safeHttpsUrl(get("thumbnail", "image", "imageUrl"));
+    const rawImages = get("images");
+    const imageUrls = [...new Set([
+      thumbnailUrl,
+      ...(Array.isArray(rawImages) ? rawImages.map((image) => safeHttpsUrl(decodeMaybe(image))) : []),
+    ].filter(isAllowedImageUrl))];
     const description = getString("description", "descriptionB64", "summary");
     const rawVersion = get("version", "release");
     const version = typeof rawVersion === "number" && Number.isFinite(rawVersion)
@@ -142,6 +148,7 @@ export function mapManifestAssets(raw: unknown): AssetMappingResult {
       ...(creator ? { creator } : {}),
       ...(tags.length ? { tags } : {}),
       ...(thumbnailUrl ? { thumbnailUrl } : {}),
+      ...(imageUrls.length ? { imageUrls } : {}),
       ...(description ? { description } : {}),
       ...(version ? { version } : {}),
       ...(packageUrl ? { packageUrl } : {}),

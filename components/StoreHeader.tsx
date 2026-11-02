@@ -14,13 +14,12 @@ function nextTheme(isDark: boolean): Theme {
   return isDark ? "light" : "dark";
 }
 
-function ThemeIcon({ theme }: { theme: Theme }) {
-  return theme === "system" ? (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className="size-4"><rect x="2.5" y="3" width="15" height="10.5" rx="1.8" stroke="currentColor" strokeWidth="1.5"/><path d="M7 17h6m-3-3.5V17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-  ) : theme === "dark" ? (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className="size-4"><path d="M16.2 12.2A6.7 6.7 0 0 1 7.8 3.8a6.8 6.8 0 1 0 8.4 8.4Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /></svg>
-  ) : (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className="size-4"><circle cx="10" cy="10" r="3.2" stroke="currentColor" strokeWidth="1.5"/><path d="M10 1.8v1.5m0 13.4v1.5m8.2-8.2h-1.5M3.3 10H1.8m14-5.8-1.1 1.1M5.3 14.7l-1.1 1.1m11.6 0-1.1-1.1M5.3 5.3 4.2 4.2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+function ThemeIcon() {
+  return (
+    <>
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className="theme-icon-dark size-4"><path d="M16.2 12.2A6.7 6.7 0 0 1 7.8 3.8a6.8 6.8 0 1 0 8.4 8.4Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /></svg>
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className="theme-icon-light size-4"><circle cx="10" cy="10" r="3.2" stroke="currentColor" strokeWidth="1.5"/><path d="M10 1.8v1.5m0 13.4v1.5m8.2-8.2h-1.5M3.3 10H1.8m14-5.8-1.1 1.1M5.3 14.7l-1.1 1.1m11.6 0-1.1-1.1M5.3 5.3 4.2 4.2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+    </>
   );
 }
 
@@ -44,7 +43,7 @@ export function StoreHeader({ searchString }: { searchString: string }) {
           <m.button type="button" whileHover={buttonMotion.hover} whileTap={buttonMotion.tap} transition={spring.hover} onClick={() => setTheme(nextTheme(document.documentElement.classList.contains("dark")))} aria-label={theme === "dark" ? t("themeLight") : theme === "light" ? t("themeDark") : t("themeLabel")} className="grid size-10 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none">
             <AnimatePresence mode="wait" initial={false}>
               <m.span key={theme} variants={iconVariants} initial="hidden" animate="visible" exit="exit" className="grid place-items-center">
-                <ThemeIcon theme={theme} />
+                <ThemeIcon />
               </m.span>
             </AnimatePresence>
           </m.button>

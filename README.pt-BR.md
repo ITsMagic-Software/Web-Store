@@ -36,6 +36,8 @@ Construído com Next.js App Router, React, TypeScript e Tailwind CSS. Durante o 
 `services/` carrega o manifesto e o transforma em assets compatíveis. O navegador filtra esse snapshot
 e guarda busca, categoria, ordenação, paginação e pacote selecionado na URL.
 Os links abrem seus destinos HTTPS originais; este projeto não hospeda arquivos de pacotes.
+O modal de detalhes mostra a capa e as fotos disponíveis do pacote em um carrossel, com miniaturas,
+botões de seta, navegação pelo teclado e gestos de deslizar no celular.
 Os detalhes de pacotes do GitHub também oferecem **Baixar ZIP**, servido diretamente pelo GitHub
 a partir da branch padrão. É o snapshot atual do código, não uma release fixa ou um build de versão específica.
 

@@ -35,6 +35,18 @@ describe("manifest decoding", () => {
       undefined,
     ]);
   });
+  it("collects the cover and package photos in order without duplicate or unsafe images", () => {
+    const cover = "https://raw.githubusercontent.com/owner/package/main/cover.jpg";
+    const photo = "https://raw.githubusercontent.com/owner/package/main/photo.jpg";
+    const item = { id: "example", title: "Example", appMajorVersion: 2, date: "2026-01-01" };
+    const result = mapManifestAssets({ packages: [
+      { ...item, thumbnail: cover, images: [cover, photo, wrap(photo), null, {}, "javascript:alert(1)", "http://raw.githubusercontent.com/photo.jpg", "https://images.example.com/photo.jpg", "https://user:password@raw.githubusercontent.com/photo.jpg"] },
+      { ...item, id: "single", thumbnail: cover, images: "not an array" },
+      { ...item, id: "without-cover", images: [photo] },
+      { ...item, id: "without-images" },
+    ] });
+    expect(result.assets.map((asset) => asset.imageUrls)).toEqual([[cover, photo], [cover], [photo], undefined]);
+  });
 });
 describe("manifest dates", () => {
   it("validates calendar dates strictly in UTC", () => {

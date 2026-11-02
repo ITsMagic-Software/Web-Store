@@ -36,6 +36,8 @@ Built with Next.js App Router, React, TypeScript and Tailwind CSS. During the bu
 `services/` loads and maps the manifest into compatible assets. The browser filters that snapshot
 and stores search, category, sort, pagination and selected package in the URL.
 Package links open their original HTTPS destinations; this project does not host package files.
+The details modal shows the cover and available package photos in a carousel, with thumbnails,
+arrow buttons, keyboard navigation and swipe gestures on mobile.
 GitHub package details also offer **Download ZIP**, served directly by GitHub from the repository's
 default branch. This is the current source snapshot, not a pinned release or a version-specific build.
 

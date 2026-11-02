@@ -3,7 +3,7 @@
 import { m } from "motion/react";
 import { buttonMotion, spring } from "@/lib/motion";
 import type { Asset } from "@/domain/models";
-import { AssetThumbnail } from "@/components/AssetThumbnail";
+import { AssetGallery } from "@/components/AssetGallery";
 import type { Locale } from "@/lib/i18n";
 import { getDictionary } from "@/lib/i18n";
 import { formatManifestDate, isValidManifestDate } from "@/lib/date";
@@ -30,7 +30,7 @@ export function AssetDetailContent({ asset, locale }: AssetDetailProps) {
     <div className="asset-detail-content">
       <div className="asset-detail-body grid gap-7 p-5 sm:gap-8 sm:p-7 lg:grid-cols-[minmax(0,1fr)_15rem]">
         <div className="min-w-0">
-          <AssetThumbnail src={asset.thumbnailUrl ?? null} seed={asset.id} />
+          <AssetGallery key={asset.id} asset={asset} locale={locale} />
           <section aria-labelledby="asset-description-title" className="mt-7">
             <h3 id="asset-description-title" className="text-base font-semibold tracking-tight text-foreground">{messages.assetDescriptionLabel}</h3>
             <p className="mt-3 whitespace-pre-line wrap-anywhere text-sm leading-7 text-muted-foreground">{asset.description?.trim() || messages.assetDescriptionUnavailable}</p>

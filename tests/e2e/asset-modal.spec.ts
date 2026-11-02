@@ -10,8 +10,9 @@ test("a direct package URL survives reload and closes while preserving filters",
   await page.reload();
   await expect(page.locator("dialog.asset-detail-dialog")).toBeVisible();
   await expect(page.locator("#asset-detail-title")).toBeVisible();
-  await expect(page.locator("dialog img")).toBeVisible();
-  await expect.poll(() => page.locator("dialog img").evaluate((image: HTMLImageElement) => image.complete)).toBe(true);
+  const preview = page.locator(".asset-gallery-preview img");
+  await expect(preview).toBeVisible();
+  await expect.poll(() => preview.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
   await expect(page.locator('dialog a[target="_blank"]').first()).toHaveAttribute("href", /^https:\/\//);
   const zipLink = page.locator("dialog.asset-detail-dialog a[download]");
   await expect(zipLink).toHaveAttribute("href", /^https:\/\/github\.com\/[^/]+\/[^/]+\/archive\/HEAD\.zip$/);
@@ -56,6 +57,35 @@ test("mobile details keep actions visible, lock background scroll and close from
   const dialog = page.locator("dialog.asset-detail-dialog");
   await expect(dialog).toBeVisible();
   await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+
+  const gallery = dialog.getByRole("region", { name: "Fotos do pacote" });
+  const thumbnails = gallery.getByRole("group", { name: "Escolher uma foto" }).getByRole("button");
+  const total = await thumbnails.count();
+  expect(total).toBeGreaterThan(1);
+  const currentPhoto = () => gallery.locator('button[aria-current="true"]');
+  const preview = gallery.locator(".asset-gallery-preview");
+  await expect(currentPhoto()).toHaveAttribute("aria-label", `Mostrar foto 1 de ${total}`);
+  await gallery.getByRole("button", { name: "Foto anterior", exact: true }).click();
+  await expect(currentPhoto()).toHaveAttribute("aria-label", `Mostrar foto ${total} de ${total}`);
+  await gallery.getByRole("button", { name: "Próxima foto", exact: true }).click();
+  await expect(currentPhoto()).toHaveAttribute("aria-label", `Mostrar foto 1 de ${total}`);
+  await gallery.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(currentPhoto()).toHaveAttribute("aria-label", `Mostrar foto 2 de ${total}`);
+  await expect(preview.getByRole("img")).toHaveCount(1);
+  await expect(preview.getByRole("img")).toHaveAttribute("alt", new RegExp(`foto 2 de ${total}$`));
+  await thumbnails.last().click();
+  await expect(currentPhoto()).toHaveAttribute("aria-label", `Mostrar foto ${total} de ${total}`);
+  await preview.evaluate((element) => {
+    const start = new Touch({ identifier: 1, target: element, clientX: 220, clientY: 120 });
+    const end = new Touch({ identifier: 1, target: element, clientX: 100, clientY: 125 });
+    element.dispatchEvent(new TouchEvent("touchstart", { bubbles: true, touches: [start] }));
+    element.dispatchEvent(new TouchEvent("touchend", { bubbles: true, changedTouches: [end] }));
+  });
+  await expect(currentPhoto()).toHaveAttribute("aria-label", `Mostrar foto 1 de ${total}`);
+  await expect(preview.getByRole("img")).toHaveCount(1);
+  await expect.poll(() => preview.getByRole("img").evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
+  await page.screenshot({ path: "qa-screenshots/asset-gallery-mobile-dark.png" });
 
   const content = page.locator(".asset-detail-body");
   expect(await content.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
