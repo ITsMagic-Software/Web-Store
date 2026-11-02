@@ -16,6 +16,7 @@ export interface AssetDetailProps {
 export function AssetDetailContent({ asset, locale }: AssetDetailProps) {
   const messages = getDictionary(locale);
   const packageIsRepository = asset.packageUrl?.startsWith("https://github.com/") ?? false;
+  const hasSeparateZip = Boolean(asset.downloadUrl && asset.downloadUrl !== asset.packageUrl);
   const category = asset.category === "template" ? messages.assetTypeTemplate : asset.category === "package" ? messages.assetTypePackage : asset.category;
   const details = [
     { label: messages.creatorLabel, value: asset.creator },
@@ -58,16 +59,22 @@ export function AssetDetailContent({ asset, locale }: AssetDetailProps) {
 
       <footer className="asset-detail-actions flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-divider bg-surface px-5 py-4 sm:px-7">
         <p className="hidden text-xs text-muted-foreground sm:block">{asset.packageUrl ? messages.assetExternalLinkHint : messages.assetDownloadUnavailable}</p>
-        <div className="flex w-full min-w-0 items-center gap-2 sm:w-auto">
+        <div className="flex w-full min-w-0 flex-col items-stretch gap-2 sm:w-auto sm:shrink-0 sm:flex-row sm:items-center">
           {asset.licenseUrl && (
-            <m.a whileHover={buttonMotion.hover} whileTap={buttonMotion.tap} transition={spring.hover} href={asset.licenseUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl border border-divider px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted">{messages.licenseLabel}</m.a>
+            <m.a whileHover={buttonMotion.hover} whileTap={buttonMotion.tap} transition={spring.hover} href={asset.licenseUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-xl border border-divider px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted">{messages.licenseLabel}</m.a>
           )}
           {asset.packageUrl ? (
-            <m.a initial="rest" whileHover="hover" whileTap={buttonMotion.tap} variants={{ rest: { scale: 1 }, hover: buttonMotion.hover }} transition={spring.hover} href={asset.packageUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 min-w-0 flex-1 items-center justify-center gap-3 rounded-xl bg-accent px-5 py-2.5 text-center text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 sm:flex-none">
-              {packageIsRepository ? messages.viewGithub : messages.downloadPackage}
+            <m.a initial="rest" whileHover="hover" whileTap={buttonMotion.tap} variants={{ rest: { scale: 1 }, hover: buttonMotion.hover }} transition={spring.hover} href={asset.packageUrl} target="_blank" rel="noopener noreferrer" className={`inline-flex min-h-11 min-w-0 items-center justify-center gap-3 whitespace-nowrap rounded-xl px-5 py-2.5 text-center text-sm font-semibold ${hasSeparateZip ? "border border-divider bg-surface text-foreground transition-colors hover:bg-muted" : "bg-accent text-accent-foreground transition-opacity hover:opacity-90"}`}>
+              {packageIsRepository ? messages.viewGithub : asset.downloadUrl ? messages.downloadZip : messages.downloadPackage}
               <m.svg variants={{ rest: { x: 0, y: 0 }, hover: { x: 1, y: -1 } }} transition={spring.hover} aria-hidden="true" viewBox="0 0 20 20" fill="none" className="size-4 shrink-0"><path d="M6 14 14 6M6.5 6H14v7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></m.svg>
             </m.a>
           ) : <p className="text-sm text-muted-foreground sm:hidden">{messages.assetDownloadUnavailable}</p>}
+          {hasSeparateZip && (
+            <m.a initial="rest" whileHover="hover" whileTap={buttonMotion.tap} variants={{ rest: { scale: 1 }, hover: buttonMotion.hover }} transition={spring.hover} href={asset.downloadUrl} download title={messages.downloadZipHint} className="inline-flex min-h-11 min-w-0 items-center justify-center gap-3 whitespace-nowrap rounded-xl bg-accent px-5 py-2.5 text-center text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90">
+              {messages.downloadZip}
+              <m.svg variants={{ rest: { y: 0 }, hover: { y: 1 } }} transition={spring.hover} aria-hidden="true" viewBox="0 0 20 20" fill="none" className="size-4 shrink-0"><path d="M10 3v9m-3-3 3 3 3-3M4 13v3h12v-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></m.svg>
+            </m.a>
+          )}
         </div>
       </footer>
     </div>

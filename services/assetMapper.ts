@@ -1,5 +1,6 @@
 import { parseManifestDate } from "@/lib/date";
 import type { Asset } from "@/domain/models";
+import { getGitHubZipUrl } from "@/services/github/repositoryMetadata";
 
 type RawAsset = Record<string, unknown>;
 
@@ -126,6 +127,9 @@ export function mapManifestAssets(raw: unknown): AssetMappingResult {
         ? rawVersion.trim()
         : undefined;
     const packageUrl = safeHttpsUrl(get("repositoryURL"));
+    const downloadUrl = packageUrl
+      ? getGitHubZipUrl(packageUrl) ?? (/\.zip$/i.test(new URL(packageUrl).pathname) ? packageUrl : undefined)
+      : undefined;
     const licenseUrl = safeHttpsUrl(get("licenseB64"));
     const date = parseManifestDate(getString("date") ?? "");
     if (!date) invalidDates += 1;
@@ -141,6 +145,7 @@ export function mapManifestAssets(raw: unknown): AssetMappingResult {
       ...(description ? { description } : {}),
       ...(version ? { version } : {}),
       ...(packageUrl ? { packageUrl } : {}),
+      ...(downloadUrl ? { downloadUrl } : {}),
       ...(licenseUrl ? { licenseUrl } : {}),
     });
   }

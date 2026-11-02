@@ -39,6 +39,8 @@
   "creatorLabel": "Criador",
   "openRepository": "Abrir repositório open source",
   "downloadPackage": "Baixar pacote",
+  "downloadZip": "Baixar pacote",
+  "downloadZipHint": "Baixar a branch padrão do repositório em um arquivo ZIP",
   "backToCatalog": "Voltar ao catálogo",
   "assetDetailTitle": "Detalhes do asset",
   "viewPackage": "Ver detalhes do asset",

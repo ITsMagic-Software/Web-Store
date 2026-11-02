@@ -16,8 +16,24 @@ describe("manifest decoding", () => {
     const result = mapManifestAssets({ packages: [item, { ...item, appMajorVersion: 1 }, null] });
     expect(result.assets).toHaveLength(1);
     expect(result.assets[0]?.packageUrl).toBeUndefined();
+    expect(result.assets[0]?.downloadUrl).toBeUndefined();
     expect(result.invalidDates).toBe(1);
     expect(result.skippedInvalid).toBe(1);
+  });
+  it("provides a default-branch ZIP for GitHub repositories and preserves direct ZIP URLs", () => {
+    const item = { id: "example", title: "Example", appMajorVersion: 2, date: "2026-01-01" };
+    const result = mapManifestAssets({ packages: [
+      { ...item, id: "repository", repositoryURL: "https://github.com/owner/package.git/" },
+      { ...item, id: "zip", repositoryURL: "https://downloads.example.com/package.ZIP?version=2" },
+      { ...item, id: "other", repositoryURL: "https://example.com/package" },
+      { ...item, id: "spoof", repositoryURL: "https://github.com.evil.test/owner/package" },
+    ] });
+    expect(result.assets.map((asset) => asset.downloadUrl)).toEqual([
+      "https://github.com/owner/package/archive/HEAD.zip",
+      "https://downloads.example.com/package.ZIP?version=2",
+      undefined,
+      undefined,
+    ]);
   });
 });
 describe("manifest dates", () => {

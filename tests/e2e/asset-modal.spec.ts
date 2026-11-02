@@ -13,6 +13,19 @@ test("a direct package URL survives reload and closes while preserving filters",
   await expect(page.locator("dialog img")).toBeVisible();
   await expect.poll(() => page.locator("dialog img").evaluate((image: HTMLImageElement) => image.complete)).toBe(true);
   await expect(page.locator('dialog a[target="_blank"]').first()).toHaveAttribute("href", /^https:\/\//);
+  const zipLink = page.locator("dialog.asset-detail-dialog a[download]");
+  await expect(zipLink).toHaveAttribute("href", /^https:\/\/github\.com\/[^/]+\/[^/]+\/archive\/HEAD\.zip$/);
+  const zipUrl = await zipLink.getAttribute("href");
+  if (!zipUrl) throw new Error("Expected a ZIP download URL");
+  await page.route(zipUrl, (route) => route.fulfill({
+    status: 200,
+    headers: { "Content-Type": "application/zip", "Content-Disposition": 'attachment; filename="asset.zip"' },
+    body: Buffer.from("UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==", "base64"),
+  }));
+  const [download] = await Promise.all([page.waitForEvent("download"), zipLink.click()]);
+  expect(download.suggestedFilename()).toBe("asset.zip");
+  expect(await download.failure()).toBeNull();
+  await expect(page.locator("dialog.asset-detail-dialog")).toBeVisible();
   await page.screenshot({ path: "qa-screenshots/asset-modal-desktop-light.png" });
   await page.getByRole("button", { name: "Voltar ao catálogo" }).click();
   await expect(page.locator("dialog.asset-detail-dialog")).not.toBeVisible();
@@ -49,6 +62,7 @@ test("mobile details keep actions visible, lock background scroll and close from
   await content.evaluate((element) => { element.scrollTop = element.scrollHeight; });
   await expect(dialog.getByRole("button", { name: "Voltar ao catálogo" })).toBeInViewport({ ratio: 1 });
   await expect(dialog.getByRole("link", { name: "Ver no GitHub" })).toBeInViewport({ ratio: 1 });
+  await expect(dialog.locator("a[download]")).toBeInViewport({ ratio: 1 });
   expect(await dialog.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
   for (let index = 0; index < 4; index++) {
     await page.keyboard.press("Tab");

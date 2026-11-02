@@ -34,6 +34,11 @@ export function getGitHubRepositoryCoordinates(value: string): GitHubRepositoryC
   }
 }
 
+export function getGitHubZipUrl(value: string): string | undefined {
+  const coordinates = getGitHubRepositoryCoordinates(value);
+  return coordinates ? `https://github.com/${coordinates.owner}/${coordinates.repository}/archive/HEAD.zip` : undefined;
+}
+
 export function parseLatestCommitDate(payload: unknown): string | null {
   const parsed = GitHubCommitList.safeParse(payload);
   if (!parsed.success) return null;
